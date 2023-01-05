@@ -58,3 +58,31 @@ function chatStripe (isAi, value, uniqueId) {
     `
   )
 }
+
+const handleSubmit = async (e) => {
+  e.preventDefault(); //prevent reloading browser for each submit
+  //get the data we type into the form, we pass in the form from within our HTML
+  const data = new FormData(form);
+
+  // user's chatStripe and then reseting form
+  chatContainer.innerHTML += chatStripe(false, data.get('prompt'));
+
+  form.reset();
+
+  // bot's chatStripe, chat Stripe set true cause AI is typing...
+  const uniqueId = generateUniqueId();
+  chatContainer.innerHTML += chatStripe(true, " ", uniqueId);
+  //puts new message in view
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+
+  const messageDiv = document.getElementById(uniqueId);
+
+  loader(messageDiv);
+}
+//event listening for submit clicked to run handlesubmit
+form.addEventListener('submit', handleSubmit);
+form.addEventListener('keyup', (e) => {
+  if (e.keyCode === 13) { //#13 for enter key
+    handleSubmit(e);
+  }
+})
